@@ -19,7 +19,7 @@ This mobile application is developed using **React Native** and **Expo** (SDK 51
 3. **Configure Environment Variables: Create a .env file in the root directory:**
    EXPO_PUBLIC_API_URL=[https://admin.reva.la/api/u](https://admin.reva.la/api/u)
    EXPO_PUBLIC_API_TOKEN=your_token_here
-   
+
 4. **Run the project:**
    npx expo start
 
@@ -44,6 +44,7 @@ This mobile application is developed using **React Native** and **Expo** (SDK 51
 [x] Successfully verify data retrieval from Reva's /bookings/index endpoint.
 
 **Phase 3: UI & Data Representation (Upcoming)**
+
 [ ] Define TypeScript interfaces for Booking objects.
 
 [ ] Create a reusable Booking Card component.
