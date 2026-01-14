@@ -20,3 +20,9 @@ A mobile application developed with **React Native** and **Expo** to manage and 
 2. Install dependencies:
    ```bash
       npm install
+
+### Latest UI/UX Improvements
+- **Enhanced Booking Cards:** Implemented a cleaner hierarchy by removing heavy borders and adding subtle elevation/shadows for a premium feel.
+- **Improved Typography:** Applied high-contrast color scales to distinguish between primary information (Field Name) and metadata (Sport, Establishment).
+- **Micro-interactions:** Added tactile feedback using scale transformations on pressable elements to improve user confidence.
+- **Robustness:** Integrated optional chaining and safety guards to prevent UI crashes during data fetching.

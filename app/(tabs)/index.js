@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { fetchBookings } from '../../src/api/revaApi';
-import { BookingCard } from '../../src/components/BookingCard';
+import BookingCard from '../../src/components/BookingCard';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function HomeScreen() {
             keyExtractor={(item) => item.booking_id.toString()}
             renderItem={({ item }) => (
             <BookingCard 
-              booking={item} 
+              item={item} 
                onPress={() => router.push({
                 pathname: '/details',
                 params: item // Here we send all the information to Endpoint 2 (Detail View)
