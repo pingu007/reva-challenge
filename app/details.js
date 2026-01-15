@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -14,6 +14,21 @@ export default function DetailsScreen() {
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+      {/* Header configuration (Override) */}
+      <Stack.Screen 
+        options={{ 
+          headerTransparent: true, 
+          headerTitle: '',
+          headerLeft: () => (
+            <Pressable 
+              onPress={() => router.back()} 
+              style={styles.customBackButton}
+            >
+          <Text style={styles.customBackText}>✕</Text>
+        </Pressable>
+      ),
+    }}
+    />
       <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
         
         {/* Header Hero Section */}
@@ -23,9 +38,6 @@ export default function DetailsScreen() {
             style={styles.heroImage} 
             resizeMode="cover"
           />
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <Text style={styles.backText}>{Platform.OS === 'ios' ? '✕' : '←'}</Text>
-          </Pressable>
         </View>
 
         {/* Content Section with negative margin to overlap the image */}
@@ -82,21 +94,23 @@ export default function DetailsScreen() {
 
 const styles = StyleSheet.create({
   mainContainer: { flex: 1, backgroundColor: '#FFFFFF' },
-  imageContainer: { width: '100%', height: 350, position: 'relative' },
+  imageContainer: { width: '100%', height: 350 },
   heroImage: { width: '100%', height: '100%' },
-  backButton: {
-    position: 'absolute',
-    top: 50,
-    left: 20,
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  customBackButton: {
+    backgroundColor: 'rgba(255,255,255,0.9)', 
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
+    marginLeft: 8, // Small margin so it doesn't touch the edge of the iPhone
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
+      android: { elevation: 3 }
+    })
   },
-  backText: { fontSize: 20, fontWeight: 'bold', color: '#000' },
+  customBackText: { fontSize: 18, fontWeight: 'bold', color: '#000' },
+
   contentCard: {
     marginTop: -30,
     backgroundColor: '#FFFFFF',
