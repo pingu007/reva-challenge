@@ -1,6 +1,7 @@
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const BookingCard = ({ item, onPress }) => {
+ console.log("🔍 ESTRUCTURA DEL ITEM:", JSON.stringify(item, null, 2));
   // Security guard: If the item does not exist, nothing is rendered, preventing a crash.
   if (!item) return null;
 
@@ -29,8 +30,18 @@ const BookingCard = ({ item, onPress }) => {
           {item.start_time?.substring(11, 16) || '--:--'} - {item.end_time?.substring(11, 16) || '--:--'}
         </Text>
         <Text style={styles.price}>
-          PYG {item.total_price ? parseFloat(item.total_price).toLocaleString() : '0'}
-        </Text>
+          PYG {
+            (() => {
+              /*
+                  If it works in detail, it's because the data exists.
+                  Here, we search for it in all its possible forms.
+              */
+              const priceValue = item?.total_price || item?.price || item?.amount || 0;
+      
+              return parseFloat(priceValue).toLocaleString('es-PY');
+            })()
+          }
+       </Text> 
       </View>
     </Pressable>
   );

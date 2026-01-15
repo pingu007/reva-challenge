@@ -26,3 +26,8 @@ A mobile application developed with **React Native** and **Expo** to manage and 
 - **Improved Typography:** Applied high-contrast color scales to distinguish between primary information (Field Name) and metadata (Sport, Establishment).
 - **Micro-interactions:** Added tactile feedback using scale transformations on pressable elements to improve user confidence.
 - **Robustness:** Integrated optional chaining and safety guards to prevent UI crashes during data fetching.
+  
+- **Data Integrity & UI Refinement**
+- **Consolidated Pricing Logic:** Successfully resolved a cross-view data discrepancy where prices were missing in the main feed.
+- **Robust Component Pattern:** Implemented an IIFE (Immediately Invoked Function Expression) within the UI to dynamically fetch pricing from multiple possible API fields.
+- **Visual Polish:** Fully transitioned to a borderless, shadow-based card design that maintains high performance on both iOS and Android.
