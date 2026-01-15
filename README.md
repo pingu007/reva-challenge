@@ -31,3 +31,8 @@ A mobile application developed with **React Native** and **Expo** to manage and 
 - **Consolidated Pricing Logic:** Successfully resolved a cross-view data discrepancy where prices were missing in the main feed.
 - **Robust Component Pattern:** Implemented an IIFE (Immediately Invoked Function Expression) within the UI to dynamically fetch pricing from multiple possible API fields.
 - **Visual Polish:** Fully transitioned to a borderless, shadow-based card design that maintains high performance on both iOS and Android.
+
+### Technical Achievement: API Data Inspection
+- **Terminal Logging:** Successfully enabled and utilized Node.js terminal logs to inspect the real-time JSON structure of the Reva API.
+- **Data Field Discovery:** Identified `price` and `field_amount` as the primary keys for financial data, resolving previous rendering issues.
+- **Precision Handling:** Implemented `parseFloat` with `toLocaleString` to correctly manage string-to-number conversions and regional currency formatting (PYG).

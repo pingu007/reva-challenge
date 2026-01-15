@@ -1,48 +1,52 @@
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const BookingCard = ({ item, onPress }) => {
- console.log("🔍 ESTRUCTURA DEL ITEM:", JSON.stringify(item, null, 2));
+  console.log("🔍 ESTRUCTURA DEL ITEM:", JSON.stringify(item, null, 2));
   // Security guard: If the item does not exist, nothing is rendered, preventing a crash.
   if (!item) return null;
-
+  
   return (
     <Pressable 
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.card,
-        pressed && { transform: [{ scale: 0.98 }], opacity: 0.9 }
-      ]}
+    onPress={onPress}
+    style={({ pressed }) => [
+      styles.card,
+      pressed && { transform: [{ scale: 0.98 }], opacity: 0.9 }
+    ]}
     >
-      <View style={styles.header}>
-        {/* We use the ?. operator to avoid errors if the property is missing */}
-        <Text style={styles.establishment}>
-          {item.establishment_public_name || 'Establecimiento'}
-        </Text>
-        <Text style={styles.sportBadge}>
-          {item.sport_name?.toUpperCase() || 'DEPORTE'}
-        </Text>
-      </View>
-
-      <Text style={styles.fieldName}>{item.field_name || 'Cancha sin nombre'}</Text>
-      
-      <View style={styles.footer}>
-        <Text style={styles.time}>
-          {item.start_time?.substring(11, 16) || '--:--'} - {item.end_time?.substring(11, 16) || '--:--'}
-        </Text>
-        <Text style={styles.price}>
-          PYG {
-            (() => {
-              /*
-                  If it works in detail, it's because the data exists.
-                  Here, we search for it in all its possible forms.
-              */
-              const priceValue = item?.total_price || item?.price || item?.amount || 0;
-      
-              return parseFloat(priceValue).toLocaleString('es-PY');
-            })()
-          }
-       </Text> 
-      </View>
+    <View style={styles.header}>
+    {/* We use the ?. operator to avoid errors if the property is missing */}
+    <Text style={styles.establishment}>
+    {item.establishment_public_name || 'Establecimiento'}
+    </Text>
+    <Text style={styles.sportBadge}>
+    {item.sport_name?.toUpperCase() || 'DEPORTE'}
+    </Text>
+    </View>
+    
+    <Text style={styles.fieldName}>{item.field_name || 'Cancha sin nombre'}</Text>
+    
+    <View style={styles.footer}>
+    <Text style={styles.time}>
+    {item.start_time?.substring(11, 16) || '--:--'} - {item.end_time?.substring(11, 16) || '--:--'}
+    </Text>
+    <Text style={styles.price}>
+      PYG {
+        (() => {
+          // 1. Use 'price' field as identified in terminal logs
+          // 2. Fallback to 'field_amount' if 'price' is unavailable
+          const rawPrice = item?.price || item?.field_amount || 0;
+          
+          // 3. Convert string to number and format for Paraguay (PYG)
+          const numericPrice = parseFloat(rawPrice);
+          
+          // 4. Format with thousands separators for Paraguay
+          return !isNaN(numericPrice) 
+            ? numericPrice.toLocaleString('es-PY') 
+            : '0';
+        })()
+      }
+    </Text>
+    </View>
     </Pressable>
   );
 };
