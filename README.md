@@ -41,3 +41,8 @@ A mobile application developed with **React Native** and **Expo** to manage and 
 - **High-Resolution Imagery:** Successfully integrated the `full_field_picture_url` into a Hero Header layout.
 - **UI Consistency:** Finalized the synchronization of pricing and naming conventions across the entire booking flow.
 - **Clean Architecture:** Refactored imports to eliminate deprecation warnings and follow industry standards.
+
+### Latest Updates:
+- **Native Header Override:** Implemented a custom back button using Expo Router's `headerLeft` for a seamless UI.
+- **Immersive Design:** Integrated high-resolution hero images that blend with the navigation bar.
+- **Data Integrity:** Ensured 100% accuracy in price rendering across the booking lifecycle.
