@@ -1,12 +1,18 @@
 import { Platform, StyleSheet } from "react-native";
 
+/**
+ * Global Styles for DetailsScreen
+ * * Organized by UI modules (Header, Profile, Info Grid, Footer).
+ * * Uses a "Bento Grid" design language: rounded corners, soft shadows, and card-based layout.
+ */
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#F9FAFB", // Light grey background for contrast
   },
 
-  // --- HEADER ---
+  // --- HEADER CONFIGURATION ---
+  // Custom styles for the navigation bar elements
   headerTitle: { fontSize: 16, fontWeight: "700", color: "#111827" },
   headerBtnWrapper: {
     width: 40,
@@ -14,7 +20,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 20, // Perfectly circular buttons
+    // Platform-specific shadows for depth
     ...Platform.select({
       ios: {
         shadowColor: "#000",
@@ -26,15 +33,16 @@ const styles = StyleSheet.create({
     }),
   },
 
-  // --- SCROLL CONTENT ---
+  // --- MAIN SCROLL CONTENT ---
   scrollContent: {
     padding: 20,
-    paddingTop: 100,
-    paddingBottom: 240, // Espacio extra grande para que el footer no tape el contenido
-    gap: 16,
+    paddingTop: 100, // Extra top padding to account for transparent header
+    paddingBottom: 240, // Large bottom padding ensures content isn't hidden behind the Sticky Footer
+    gap: 16, // Consistent spacing between Bento cards
   },
 
-  // 1. PROFILE BENTO (Diseño Limpio Blanco)
+  // --- MODULE 1: PROFILE CARD ---
+  // Displays user avatar, name, and booking status
   profileCard: {
     backgroundColor: "white",
     borderRadius: 24,
@@ -68,11 +76,12 @@ const styles = StyleSheet.create({
   },
   statusText: { fontSize: 10, fontWeight: "700" },
 
-  // 2. INFO BENTO
+  // --- MODULE 2: INFO GRID (Time & Court) ---
+  // Uses flexWrap to create a 2-column layout
   infoGrid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   infoBox: {
     flex: 1,
-    minWidth: "45%",
+    minWidth: "45%", // Ensures two boxes fit side-by-side
     backgroundColor: "white",
     borderRadius: 20,
     padding: 16,
@@ -91,7 +100,7 @@ const styles = StyleSheet.create({
   infoValue: { fontSize: 15, fontWeight: "700", color: "#1F2937" },
   infoSubValue: { fontSize: 12, color: "#6B7280", marginTop: 2 },
 
-  // 3. INVENTORY MODULE
+  // --- MODULE 3: INVENTORY / PRODUCTS ---
   productsCard: {
     backgroundColor: "white",
     borderRadius: 24,
@@ -118,6 +127,8 @@ const styles = StyleSheet.create({
   },
   productName: { fontSize: 14, fontWeight: "600", color: "#374151" },
   productPrice: { fontSize: 12, color: "#9CA3AF" },
+
+  // Custom Stepper Component Styles (+ / - buttons)
   counterContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -143,7 +154,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  // --- 4. STATIC FOOTER (Diseño Blanco Limpio) ---
+  // --- MODULE 4: STICKY FOOTER ---
+  // Fixed at the bottom of the screen to show totals and action button
   stickyFooter: {
     position: "absolute",
     bottom: 0,
@@ -153,6 +165,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     padding: 24,
+    // Heavy shadow to separate from content
     shadowColor: "#000",
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.08,
@@ -188,7 +201,7 @@ const styles = StyleSheet.create({
   totalValue: { color: "#059669", fontSize: 22, fontWeight: "900" },
 
   payButton: {
-    backgroundColor: "#059669",
+    backgroundColor: "#059669", // Success Green
     paddingVertical: 16,
     borderRadius: 16,
     flexDirection: "row",
@@ -206,7 +219,8 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 
-  // ACTIONS (Botones de modificar/cancelar)
+  // --- MODULE 5: SECONDARY ACTIONS ---
+  // Modify / Cancel buttons
   actionsGrid: {
     flexDirection: "row",
     gap: 12,
@@ -222,7 +236,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   modifyBtn: { borderColor: "#E5E7EB" },
-  cancelBtn: { borderColor: "#FECACA", backgroundColor: "#FEF2F2" },
+  cancelBtn: { borderColor: "#FECACA", backgroundColor: "#FEF2F2" }, // Light red background
   actionText: { fontWeight: "700", fontSize: 14 },
 });
 
