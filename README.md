@@ -1,48 +1,37 @@
 # Reva Challenge - Booking Management App
 
-A mobile application developed with **React Native** and **Expo** to manage and visualize sports facility bookings.
+A mobile application developed with **React Native** and **Expo** to manage and visualize sports facility bookings. This solution focuses on a clean UI, robust API integration, and modern design patterns.
 
 ## Implemented Features
-- **Full JavaScript Migration:** The project was successfully migrated from TypeScript to **pure JavaScript** to ensure a clean, maintainable, and standardized codebase.
-- **Interactive Calendar** Dynamic booking filtering based on the selected date.
-- **Booking Details View** Dedicated screen displaying all available information for an individual booking, including ID, Sport, Schedule, and Pricing.
-- **API Integration:** Robust consumption of Reva's endpoints using Axios, with secure environment variable management.
+
+### 1. Interactive Calendar & Agenda (Home)
+
+- **Fluid Agenda View:** Implemented a `SectionList` with **Sticky Headers** that group bookings by date. The header design was refined to be clean and legible, ensuring users always know which date they are viewing without visual clutter.
+- **Glassmorphism Date Picker:** A custom date range selector built with `BlurView` (Liquid Glass effect) that allows users to filter bookings by specific periods with visual validation.
+- **Smart Sorting:** Bookings are automatically sorted by time and court name for a logical flow.
+
+### 2. Booking Details View (Details)
+
+- **Bento Grid Layout:** Information is organized into modular cards (Profile, Schedule, Inventory) for better readability and visual hierarchy.
+- **Dynamic Financial Calculation:** Real-time calculation of costs, separating the **Hourly Rate** from the **Total**, including a simulation of additional products (inventory).
+- **Sticky Footer Actions:** A static action bar at the bottom for payments, ensuring the "Pay" button is always accessible without obstructing content.
+
+### 3. API Integration
+
+- **Robust Fetching:** Consumes Reva's endpoints using `axios` with `FormData` for secure authentication.
+- **Environment Security:** API keys and URLs are managed via `.env` files (with a `.env.example` provided for safety).
+
+---
 
 ## Tech Stack & Structure
-- **Framework:** Expo (React Native) with Expo Router.
-- **UI Components:** React Native Calendars.
-- **Architecture:** Optimized directory structure, free of orphan TypeScript files and broken path aliases.
 
-> **Note on UI:** Current development has prioritized functional logic and technical stability. Future iterations will focus on aesthetic polishing and enhanced UI/UX design.
+- **Framework:** Expo SDK 52 (React Native).
+- **Routing:** Expo Router (Stack & Tabs).
+- **UI Libraries:** `react-native-calendars`, `expo-blur`.
+- **Utilities:** `date-fns` for robust date formatting.
+- **Architecture:** Clean Architecture with clear separation of concerns:
+  - `/app`: Screens and Navigation layouts.
+  - `/src/api`: API logic and services.
+  - `/src/components`: Reusable UI components.
 
-## Setup & Installation
-1. Clone the repository.
-2. Install dependencies:
-   ```bash
-      npm install
-
-### Latest UI/UX Improvements
-- **Enhanced Booking Cards:** Implemented a cleaner hierarchy by removing heavy borders and adding subtle elevation/shadows for a premium feel.
-- **Improved Typography:** Applied high-contrast color scales to distinguish between primary information (Field Name) and metadata (Sport, Establishment).
-- **Micro-interactions:** Added tactile feedback using scale transformations on pressable elements to improve user confidence.
-- **Robustness:** Integrated optional chaining and safety guards to prevent UI crashes during data fetching.
-  
-- **Data Integrity & UI Refinement**
-- **Consolidated Pricing Logic:** Successfully resolved a cross-view data discrepancy where prices were missing in the main feed.
-- **Robust Component Pattern:** Implemented an IIFE (Immediately Invoked Function Expression) within the UI to dynamically fetch pricing from multiple possible API fields.
-- **Visual Polish:** Fully transitioned to a borderless, shadow-based card design that maintains high performance on both iOS and Android.
-
-### Technical Achievement: API Data Inspection
-- **Terminal Logging:** Successfully enabled and utilized Node.js terminal logs to inspect the real-time JSON structure of the Reva API.
-- **Data Field Discovery:** Identified `price` and `field_amount` as the primary keys for financial data, resolving previous rendering issues.
-- **Precision Handling:** Implemented `parseFloat` with `toLocaleString` to correctly manage string-to-number conversions and regional currency formatting (PYG).
-
-### Visual & Technical Milestone Reached
-- **High-Resolution Imagery:** Successfully integrated the `full_field_picture_url` into a Hero Header layout.
-- **UI Consistency:** Finalized the synchronization of pricing and naming conventions across the entire booking flow.
-- **Clean Architecture:** Refactored imports to eliminate deprecation warnings and follow industry standards.
-
-### Latest Updates:
-- **Native Header Override:** Implemented a custom back button using Expo Router's `headerLeft` for a seamless UI.
-- **Immersive Design:** Integrated high-resolution hero images that blend with the navigation bar.
-- **Data Integrity:** Ensured 100% accuracy in price rendering across the booking lifecycle.
+> **Note on Code Quality:** The project includes strict JSDoc documentation, structured Git history, and has been purged of unused boilerplate files
