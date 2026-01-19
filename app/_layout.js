@@ -1,12 +1,16 @@
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context"; // Essential import
 
 export default function RootLayout() {
   return (
-    <Stack>
-      {/* This groups your Calendar and Explore */}
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      {/* This is the screen for Requirement 3.2: Reservation Details*/}
-      <Stack.Screen name="details" options={{ title: 'Detalle de la Reserva' }} />
-    </Stack>
+    <SafeAreaProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="details"
+          options={{ title: "Detalle de la Reserva" }}
+        />
+      </Stack>
+    </SafeAreaProvider>
   );
 }
