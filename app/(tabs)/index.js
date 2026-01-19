@@ -22,6 +22,7 @@ import BookingCard from "../../src/components/BookingCard";
 import GlassDateRangePicker from "../../src/components/GlassDateRangePicker";
 
 // Enable LayoutAnimation for Android devices
+// Required to make the accordion (collapse/expand) effect work smoothly on Android
 if (
   Platform.OS === "android" &&
   UIManager.setLayoutAnimationEnabledExperimental
@@ -29,28 +30,46 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+/**
+ * HomeScreen Component
+ * * The main dashboard of the application.
+ * * Functionality: Lists bookings, filters by date, and displays venue info.
+ * * UI Pattern: Uses a "Bento" style list with collapsible Sticky Headers.
+ */
 export default function HomeScreen() {
   const router = useRouter();
 
   // --- STATE MANAGEMENT ---
+  // Date range filters (defaults to today)
   const [startDate, setStartDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [endDate, setEndDate] = useState(format(new Date(), "yyyy-MM-dd"));
 
-  const [showGlassCalendar, setShowGlassCalendar] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // UI States
+  const [showGlassCalendar, setShowGlassCalendar] = useState(false); // Modal visibility
+  const [loading, setLoading] = useState(false); // API loading state
 
-  const [groupedBookings, setGroupedBookings] = useState([]);
-  const [collapsedSections, setCollapsedSections] = useState({});
-  const [venueName, setVenueName] = useState("Cargando...");
+  // Data States
+  const [groupedBookings, setGroupedBookings] = useState([]); // Data structured for SectionList
+  const [collapsedSections, setCollapsedSections] = useState({}); // Tracks collapsed dates: { '2025-01-20': true }
+  const [venueName, setVenueName] = useState("Cargando..."); // Establishment name fetched from API
 
   // --- LOGIC: SORTING ---
+  /**
+   * Sorts the raw booking list to ensure proper display order.
+   * Priority 1: Start Time (09:00 before 10:00).
+   * Priority 2: Court Name (Court 1 before Court 2).
+   */
   const sortBookings = (bookings) => {
     return bookings.sort((a, b) => {
+      // Extract time part "HH:mm:ss"
       const timeA = a.start_time.split(" ")[1];
       const timeB = b.start_time.split(" ")[1];
+
+      // Compare Times
       if (timeA < timeB) return -1;
       if (timeA > timeB) return 1;
 
+      // Compare Court Names (Natural alphanumeric sort)
       const courtA = a.field_name || "";
       const courtB = b.field_name || "";
       return courtA.localeCompare(courtB, undefined, {
@@ -61,33 +80,44 @@ export default function HomeScreen() {
   };
 
   // --- LOGIC: GROUPING ---
+  /**
+   * Transforms raw API array into SectionList format.
+   * Output: [{ title: '2025-01-01', data: [...], count: 5 }, ...]
+   */
   const groupDataByDate = (rawBookings) => {
     if (!Array.isArray(rawBookings)) return [];
 
+    // 1. Sort first
     const sortedBookings = sortBookings([...rawBookings]);
 
+    // 2. Reduce into object keys
     const groups = sortedBookings.reduce((acc, booking) => {
-      const dateKey = booking.start_time.split(" ")[0];
+      const dateKey = booking.start_time.split(" ")[0]; // YYYY-MM-DD
       if (!acc[dateKey]) acc[dateKey] = [];
       acc[dateKey].push(booking);
       return acc;
     }, {});
 
+    // 3. Map to array
     return Object.keys(groups)
       .sort()
       .map((date) => ({
         title: date,
         data: groups[date],
-        count: groups[date].length,
+        count: groups[date].length, // Total bookings for that day
       }));
   };
 
   // --- LOGIC: ACCORDION TOGGLE ---
+  /**
+   * Toggles the visibility of a specific date section.
+   * Uses LayoutAnimation for a smooth slide effect instead of a jump cut.
+   */
   const toggleSection = (title) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setCollapsedSections((prev) => ({
       ...prev,
-      [title]: !prev[title],
+      [title]: !prev[title], // Toggle boolean
     }));
   };
 
@@ -98,15 +128,17 @@ export default function HomeScreen() {
     try {
       const data = await fetchBookings(startDate, endDate);
 
+      // Extract Venue Name from the first available booking
+      // This satisfies the requirement to show the Establishment Name in the Header
       if (data && data.length > 0) {
         const firstName = data[0].establishment_public_name;
         if (firstName) setVenueName(firstName);
       } else if (venueName === "Cargando...") {
-        setVenueName("Mi Club");
+        setVenueName("Mi Club"); // Fallback
       }
 
       setGroupedBookings(groupDataByDate(data));
-      setCollapsedSections({});
+      setCollapsedSections({}); // Reset toggles on new filter
     } catch (error) {
       console.error("Error loading bookings:", error);
       setVenueName("Mi Club");
@@ -115,22 +147,29 @@ export default function HomeScreen() {
     }
   };
 
+  // Refetch when date range changes
   useEffect(() => {
     loadBookings();
   }, [startDate, endDate]);
 
+  // Helper string for the Date Picker Button
   const dateRangeText =
     startDate && endDate
       ? `${format(parseISO(startDate), "dd MMM", { locale: es })} - ${format(parseISO(endDate), "dd MMM", { locale: es })}`
       : "Filtrar por fecha";
 
-  // --- RENDER COMPONENT: STICKY SECTION HEADER (CORREGIDO "NORMAL") ---
+  // --- RENDER COMPONENT: STICKY SECTION HEADER ---
+  /**
+   * Renders the floating header for each day.
+   * Contains: Date Text (Clean), Booking Count Badge, Chevron.
+   */
   const renderSectionHeader = ({ section: { title, count } }) => {
     const date = parseISO(title);
 
-    // FORMATO "NORMAL": "MARTES 6 DE ENERO"
+    // Format: "MARTES 6 DE ENERO" (Classic/Clean style)
     let label = format(date, "EEEE d 'DE' MMMM", { locale: es }).toUpperCase();
 
+    // Add relative prefixes
     if (isToday(date)) label = "HOY, " + label;
     else if (isTomorrow(date)) label = "MAÑANA, " + label;
 
@@ -144,15 +183,16 @@ export default function HomeScreen() {
           style={styles.sectionHeaderContent}
         >
           <View style={styles.headerTitleRow}>
-            {/* SIN CÍRCULO: Solo el texto limpio y legible */}
+            {/* 1. Date Label */}
             <Text style={styles.sectionHeaderText}>{label}</Text>
 
-            {/* Badge de cantidad */}
+            {/* 2. Count Badge */}
             <View style={styles.headerBadge}>
               <Text style={styles.headerBadgeText}>{countLabel}</Text>
             </View>
           </View>
 
+          {/* 3. Accordion Arrow */}
           <Ionicons
             name={isCollapsed ? "chevron-down" : "chevron-up"}
             size={16}
@@ -163,9 +203,10 @@ export default function HomeScreen() {
     );
   };
 
+  // --- MAIN RENDER ---
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      {/* 1. MAIN HEADER */}
+      {/* 1. MAIN HEADER: Venue Name & Filter Trigger */}
       <View style={styles.header}>
         <View style={{ flex: 1, paddingRight: 10 }}>
           <Text style={styles.greeting} numberOfLines={1} adjustsFontSizeToFit>
@@ -186,11 +227,13 @@ export default function HomeScreen() {
         </Pressable>
       </View>
 
+      {/* 2. DATE RANGE PICKER MODAL */}
       <GlassDateRangePicker
         isVisible={showGlassCalendar}
         startDate={startDate}
         endDate={endDate}
         onDayPress={(day) => {
+          // Range selection logic
           if (!startDate || (startDate && endDate)) {
             setStartDate(day.dateString);
             setEndDate(null);
@@ -210,7 +253,7 @@ export default function HomeScreen() {
         }}
       />
 
-      {/* 3. BOOKING LIST */}
+      {/* 3. BOOKING LIST (SectionList) */}
       <View style={styles.listContainer}>
         {loading ? (
           <ActivityIndicator
@@ -220,6 +263,7 @@ export default function HomeScreen() {
           />
         ) : (
           <SectionList
+            // Data mapping: If section is collapsed, return empty array to hide items
             sections={groupedBookings.map((section) => ({
               ...section,
               data: collapsedSections[section.title] ? [] : section.data,
@@ -229,6 +273,7 @@ export default function HomeScreen() {
             }
             contentContainerStyle={{ paddingBottom: 100 }}
             showsVerticalScrollIndicator={false}
+            // KEY FEATURE: Enables sticky headers for Calendar look
             stickySectionHeadersEnabled={true}
             renderSectionHeader={renderSectionHeader}
             renderItem={({ item }) => (
@@ -254,9 +299,11 @@ export default function HomeScreen() {
   );
 }
 
+// --- STYLES ---
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F9FAFB" },
 
+  // Header Styles
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -280,6 +327,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
+  // Date Picker Button
   glassTriggerBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -304,12 +352,13 @@ const styles = StyleSheet.create({
 
   // --- STICKY HEADER STYLES ---
   stickyHeaderContainer: {
+    // Solid background to mask scrolling items underneath
     backgroundColor: "#F9FAFB",
     paddingTop: 16,
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(0,0,0,0.03)",
-    marginHorizontal: -20,
+    borderBottomColor: "rgba(0,0,0,0.03)", // Subtle separation
+    marginHorizontal: -20, // Negative margins to stretch full width
     paddingHorizontal: 20,
   },
 
@@ -320,8 +369,6 @@ const styles = StyleSheet.create({
   },
 
   headerTitleRow: { flexDirection: "row", alignItems: "center", gap: 10 },
-
-  // (Estilos de círculo ELIMINADOS para limpieza)
 
   sectionHeaderText: {
     fontSize: 13,
